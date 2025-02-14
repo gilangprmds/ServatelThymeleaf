@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <title>Hotel List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .empty-message {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Servatel</a>
+    </div>
+</nav>
+
+<!-- Add Hotel Button -->
+<!--<div class="container mt-4" th:if="${hotels.size() > 0}">-->
+<!--    <div class="d-flex justify-content-end">-->
+<!--        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHotelModal">Add Hotel</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- Hotel List Container -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3" th:if="${hotels.size() > 0}">
+        <h3>List of Hotels</h3>
+        <a th:href="@{/hotel/save}"><button class="btn btn-primary" >Add Hotel</button></a>
+    </div>
+
+    <div th:if="${hotels.size() == 0}" class="empty-message">
+        <h4>No hotels available.</h4>
+        <button class="btn btn-primary" th:href="@{/hotel/save}">Add Hotel</button>
+    </div>
+
+    <div class="row" th:if="${hotels.size() > 0}">
+        <div class="col-12" th:each="hotel : ${hotels}">
+            <div class="card mb-4">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <div th:id="'carousel-' + ${hotel.get('id')}" class="carousel slide" data-bs-ride="carousel">
+                            <!-- Indicators -->
+                            <div class="carousel-indicators">
+                                <button th:each="image, iterStat : ${hotel.get('hotelImages')}"
+                                        type="button"
+                                        th:data-bs-target="'#carousel-' + ${hotel.get('id')}"
+                                        th:data-bs-slide-to="${iterStat.index}"
+                                        th:classappend="${iterStat.index == 0} ? 'active'">
+                                </button>
+                            </div>
+
+                            <!-- Wrapper for slides -->
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="image, iterStat : ${hotel.get('hotelImages')}"
+                                     th:classappend="${iterStat.index == 0} ? 'active'">
+                                    <img th:src="${image.get('linkImage')}" class="d-block w-100 img-fluid rounded-start" alt="Hotel Image">
+                                </div>
+                            </div>
+
+                            <!-- Left and right controls -->
+                            <button class="carousel-control-prev" type="button" th:attr="data-bs-target='#carousel-' + ${hotel.get('id')}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" th:attr="data-bs-target='#carousel-' + ${hotel.get('id')}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${hotel.get('name')}"></h5>
+                            <p class="card-text">
+                                📍 <span th:text="${hotel.get('address').get('streetName')}"></span>,
+                                <span th:text="${hotel.get('address').get('city')}"></span>
+                            </p>
+                            <p>
+                                ⭐️ Facilities: Wifi, AC, Free Breakfast
+                            </p>
+                            <p class="text-muted">
+                                Average Price: <strong>Rp <span th:text="${hotel.get('rooms')[0].get('pricePerNight')}"></span></strong> / night
+                            </p>
+                            <a href="#" class="btn btn-warning">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/hotel/list-hotels(page=1)}">First</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/hotel/list-hotels(page=${currentPage - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == pageNumber} ? 'active'">
+                <a class="page-link" th:href="@{/hotel/list-hotels(page=${pageNumber})}" th:text="${pageNumber}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/hotel/list-hotels(page=${currentPage + 1})}">Next</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/hotel/list-hotels(page=${totalPages})}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<!-- Add Hotel Modal -->
+<!--<div class="modal fade" id="addHotelModal" tabindex="-1" aria-labelledby="addHotelModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="addHotelModalLabel">Add Hotel</h5>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <form>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Hotel Name</label>-->
+<!--                        <input type="text" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Street Name</label>-->
+<!--                        <input type="text" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">City</label>-->
+<!--                        <input type="text" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Country</label>-->
+<!--                        <input type="text" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Description</label>-->
+<!--                        <textarea class="form-control" required></textarea>-->
+<!--                    </div>-->
+<!--                    <button type="submit" class="btn btn-primary">Save</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div th:replace="fragments/modals-add-hotel :: addHotelModal"></div>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

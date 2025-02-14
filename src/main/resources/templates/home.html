@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <title>Servatel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+        .hero-slide {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+        }
+        .room-card img {
+            width: 100%;
+            height: auto;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .card-details {
+            height: 100px;
+            overflow: hidden;
+        }
+        .search-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Servatel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/hotel/save}">Add Hotel</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/hotel/list-hotels}">Hotelku</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Facilities</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Our Gallery</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#">Login</a></li>
+                        <li><a class="dropdown-item" href="#">Register</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="hero-slide" style="background-image: url('/images/background-home.jpg');"></div>
+        </div>
+        <div class="carousel-item">
+            <div class="hero-slide" style="background-image: url('/images/background-home2.jpg');"></div>
+        </div>
+        <div class="carousel-item">
+            <div class="hero-slide" style="background-image: url('/images/background-home3.jpg');"></div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container mt-5">
+    <form th:action="@{/search}" method="get" class="search-form">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <label for="city" class="form-label">Pilih Kota</label>
+                <input id="city" name="city" type="text" class="form-control" placeholder="Masukkan Kota" required>
+            </div>
+            <div class="col-md-2">
+                <label for="roomCount" class="form-label">Jumlah Kamar</label>
+                <select id="roomCount" name="roomCount" class="form-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="checkinDate" class="form-label">Check-in</label>
+                <input id="checkinDate" name="checkinDate" type="date" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label for="checkoutDate" class="form-label">Check-out</label>
+                <input id="checkoutDate" name="checkoutDate" type="date" class="form-control" required disabled>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-warning w-100">Search Now</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-5">
+        <h2>Our Offers</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card room-card">
+                    <img src="/path/to/deluxe-double-room.jpg" alt="Deluxe Double Room">
+                    <div class="card-body">
+                        <h5 class="card-title">Deluxe Double Room</h5>
+                        <p class="card-text card-details">Max 2 persons, 47 SQM, Room not available</p>
+                        <a href="#" class="btn btn-primary">Details Room</a>
+                        <a href="#" class="btn btn-secondary">Change Date</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card room-card">
+                    <img src="/path/to/deluxe-twin-room.jpg" alt="Deluxe Twin Room">
+                    <div class="card-body">
+                        <h5 class="card-title">Deluxe Twin Room</h5>
+                        <p class="card-text card-details">Max 2 persons, 45 SQM, Room not available</p>
+                        <a href="#" class="btn btn-primary">Details Room</a>
+                        <a href="#" class="btn btn-secondary">Change Date</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card room-card">
+                    <img src="/path/to/standard-room.jpg" alt="Standard Room">
+                    <div class="card-body">
+                        <h5 class="card-title">Standard Room</h5>
+                        <p class="card-text card-details">Max 2 persons, 42 SQM, Room not available</p>
+                        <a href="#" class="btn btn-primary">Details Room</a>
+                        <a href="#" class="btn btn-secondary">Change Date</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        let today = new Date().toISOString().split("T")[0];-->
+<!--        let checkInInput = document.getElementById("checkinDate");-->
+<!--        let checkOutInput = document.getElementById("checkoutDate");-->
+
+<!--        checkInInput.setAttribute("min", today);-->
+
+<!--        checkInInput.addEventListener("change", function () {-->
+<!--            if (this.value) {-->
+<!--                let checkInDate = new Date(this.value);-->
+<!--                let minCheckOutDate = new Date(checkInDate);-->
+<!--                minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);-->
+<!--                checkOutInput.removeAttribute("disabled");-->
+<!--                checkOutInput.setAttribute("min", minCheckOutDate.toISOString().split("T")[0]);-->
+<!--            } else {-->
+<!--                checkOutInput.setAttribute("disabled", "true");-->
+<!--                checkOutInput.value = "";-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script src="/js/search.js"></script>
+</body>
+</html>

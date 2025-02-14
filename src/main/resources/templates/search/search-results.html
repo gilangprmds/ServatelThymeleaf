@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Servatel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .search-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Servatel</a>
+    </div>
+</nav>
+
+<!-- Search Form -->
+<div class="container mt-5">
+    <form th:action="@{/search}" method="get" class="search-form">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <label for="city" class="form-label">Pilih Kota</label>
+                <input id="city" name="city" type="text" class="form-control" th:value="${city}" required>
+            </div>
+            <div class="col-md-2">
+                <label for="roomCount" class="form-label">JumlahTamu</label>
+                <select id="roomCount" name="roomCount" class="form-select">
+                    <option value="1" th:selected="${roomCount == 1}">1</option>
+                    <option value="2" th:selected="${roomCount == 2}">2</option>
+                    <option value="3" th:selected="${roomCount == 3}">3</option>
+                    <option value="4" th:selected="${roomCount == 4}">4</option>
+                    <option value="5" th:selected="${roomCount == 5}">5</option>
+                    <option value="6" th:selected="${roomCount == 6}">6</option>
+                    <option value="7" th:selected="${roomCount == 7}">7</option>
+                    <option value="8" th:selected="${roomCount == 8}">8</option>
+                    <option value="9" th:selected="${roomCount == 9}">9</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="checkinDate" class="form-label">Check-in</label>
+                <input id="checkinDate" name="checkinDate" type="date" class="form-control" th:value="${checkinDate}" required>
+            </div>
+            <div class="col-md-3">
+                <label for="checkoutDate" class="form-label">Check-out</label>
+                <input id="checkoutDate" name="checkoutDate" type="date" class="form-control" th:value="${checkoutDate}" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-warning w-100">Search Now</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Search Results -->
+<div class="container mt-4">
+    <h3>Search Results</h3>
+    <p class="text-success" th:text="${message}"></p>
+
+    <div class="row" th:if="${hotels.size() > 0}">
+        <div class="col-12" th:each="hotel : ${hotels}">
+            <div class="card mb-4">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <div th:id="'carousel-' + ${hotel.get('id')}" class="carousel slide" data-bs-ride="carousel">
+                            <!-- Indicators -->
+                            <div class="carousel-indicators">
+                                <button th:each="image, iterStat : ${hotel.get('hotelImages')}"
+                                        type="button"
+                                        th:data-bs-target="'#carousel-' + ${hotel.get('id')}"
+                                        th:data-bs-slide-to="${iterStat.index}"
+                                        th:classappend="${iterStat.index == 0} ? 'active'">
+                                </button>
+                            </div>
+
+                            <!-- Wrapper for slides -->
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="image, iterStat : ${hotel.get('hotelImages')}"
+                                     th:classappend="${iterStat.index == 0} ? 'active'">
+                                    <img th:src="${image.get('linkImage')}" class="d-block w-100 img-fluid rounded-start" alt="Hotel Image">
+                                </div>
+                            </div>
+
+                            <!-- Left and right controls -->
+                            <button class="carousel-control-prev" type="button" th:attr="data-bs-target='#carousel-' + ${hotel.get('id')}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" th:attr="data-bs-target='#carousel-' + ${hotel.get('id')}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${hotel.get('name')}"></h5>
+                            <p class="card-text">
+                                📍 <span th:text="${hotel.get('address').get('streetName')}"></span>,
+                                <span th:text="${hotel.get('address').get('city')}"></span>
+                            </p>
+                            <p>
+                                ⭐️ Fasilitas: Wifi, AC, Sarapan Gratis
+                            </p>
+                            <p class="text-muted">
+                                Harga rata-rata: <strong>Rp <span th:text="${hotel.get('rooms')[0].get('pricePerNight')}"></span></strong> / malam
+                            </p>
+                            <a th:href="@{/search/{id}(id=${hotel.id}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, roomCount=${roomCount})}" class="btn btn-warning">Detail Hotel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-muted" th:if="${hotels.size() == 0}">Tidak ada hotel ditemukan.</p>
+
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/search(city=${city}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, page=1, roomCount=${roomCount})}">
+                    First
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/search(city=${city}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, page=${currentPage - 1}, roomCount=${roomCount})}">
+                    Previous
+                </a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == pageNumber} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/search(city=${city}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, page=${pageNumber}, roomCount=${roomCount})}"
+                   th:text="${pageNumber}">
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/search(city=${city}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, page=${currentPage + 1}, roomCount=${roomCount})}">
+                    Next
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/search(city=${city}, checkinDate=${checkinDate}, checkoutDate=${checkoutDate}, page=${totalPages}, roomCount=${roomCount})}">
+                    Last
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().toISOString().split("T")[0];
+        let checkInInput = document.getElementById("checkinDate");
+        let checkOutInput = document.getElementById("checkoutDate");
+        let minCheckOutDate = new Date(checkInInput.getAttribute("value"));
+        minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);
+
+        checkInInput.setAttribute("min", today);
+        checkOutInput.setAttribute("min", (minCheckOutDate.toISOString().split("T")[0]));
+        // checkInInput.addEventListener("change", function () {
+        //     if (this.value) {
+        //         let checkInDate = new Date(this.value);
+        //         let minCheckOutDate = new Date(checkInDate);
+        //         minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);
+        //         checkOutInput.removeAttribute("disabled");
+        //         checkOutInput.setAttribute("min", minCheckOutDate.toISOString().split("T")[0]);
+        //     }
+        //     else {
+        //         checkOutInput.setAttribute("disabled", "true");
+        //         checkOutInput.value= "";
+        //     }
+        // });
+    });
+
+</script>
+</body>
+</html>
