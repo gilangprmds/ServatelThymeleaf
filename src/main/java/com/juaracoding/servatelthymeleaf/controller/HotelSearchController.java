@@ -6,17 +6,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@SessionAttributes("hotel")
 @RequestMapping("/search")
 public class HotelSearchController {
     @Autowired
@@ -85,9 +84,13 @@ public class HotelSearchController {
             Map<String, Object> hotel = (Map<String, Object>) responseBody.get("data");
             Map<String, String> address = (Map<String, String>) hotel.get("address");
             String city = address.get("city");
+
+            Long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+
             // Kirim data ke UI
 //            model.addAttribute("page", page);
             model.addAttribute("hotel", hotel);
+            model.addAttribute("durationDays", durationDays);
             // Menyimpan parameter pencarian untuk dipertahankan dalam pagination
             model.addAttribute("checkinDate", checkinDate);
             model.addAttribute("checkoutDate", checkoutDate);

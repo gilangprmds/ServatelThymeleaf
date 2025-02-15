@@ -91,7 +91,7 @@
     </section>
 
     <div class="card mt-4" th:each="room : ${hotel.rooms}">
-        <h5 class="card-header bg-white fw-bold" th:text="${room.roomType}">Deluxe Double Room</h5>
+        <h5 class="card-header bg-white fw-bold" th:text="${room.roomType}">RoomType</h5>
         <div class="row g-0">
             <div class="col-md-4 text-center">
                 <img src="https://via.placeholder.com/300" class="img-fluid" alt="Room Image">
@@ -103,12 +103,20 @@
                     <ul>
                         <li>Wifi Gratis</li>
                         <li>2 King Bed</li>
-                        <li>Max 2 Adult, Max 2 Child</li>
+                        <li>Kapasitas Maksimal <span th:text="${room.maxGuest}"></span> Tamu</li>
                     </ul>
-                    <p class="card-text">Jumlah kamar tersedia: <span th:text="${room.roomCount}"></span></p>
+                    <p class="card-text">Jumlah kamar tersedia: <span th:text="${room.maxAvailableRooms}"></span></p>
                     <div class="d-flex flex-column align-items-end">
                         <h4 class="text-warning">IDR <span th:text="${#numbers.formatInteger(room.pricePerNight, 0, 'COMMA')}"></span>/ room / night</h4>
-                        <button class="btn btn-warning mt-2">Pilih Kamar</button>
+<!--                        <button class="btn btn-warning mt-2">Pilih Kamar</button>-->
+                        <form th:action="@{/booking/confirmation}" method="get">
+<!--                            <input type="hidden" name="hotel" th:value="${hotel}">-->
+                            <input type="hidden" name="roomId" th:value="${room.id}">
+                            <input type="hidden" name="checkinDate" th:value="${checkinDate}">
+                            <input type="hidden" name="checkoutDate" th:value="${checkoutDate}">
+                            <input type="hidden" name="roomCount" th:value="${roomCount}">
+                            <button type="submit" class="btn btn-warning mt-2">Pilih Kamar</button>
+                        </form>
                     </div>
                 </div>
             </div>
