@@ -20,11 +20,17 @@ import java.util.List;
 public interface HotelService {
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> save(@RequestPart("hotel") String hotelJson,
+    public ResponseEntity<Object> save(@RequestHeader("Authorization") String token,
+                                       @RequestPart("hotel") String hotelJson,
                                        @RequestPart("hotelImages") List<MultipartFile> hotelImages);
 
+    @GetMapping("/hotels")
+    public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token,
+                                          @RequestParam(value = "page") Integer page);
+
     @GetMapping("/manager/hotels/{id}")
-    public ResponseEntity<Object> findAllByManagerId( @RequestParam(value = "page") Integer page,
+    public ResponseEntity<Object> findAllByManagerId( @RequestHeader("Authorization") String token,
+                                                      @RequestParam(value = "page") Integer page,
                                                       @PathVariable(value = "id") Long id);
 
 

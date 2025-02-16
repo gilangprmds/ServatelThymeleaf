@@ -1,12 +1,15 @@
 package com.juaracoding.servatelthymeleaf.controller;
 
+import com.juaracoding.servatelthymeleaf.dto.validasi.ValLoginDTO;
 import com.juaracoding.servatelthymeleaf.httpclient.HotelSearchService;
+import com.juaracoding.servatelthymeleaf.util.GlobalFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,12 +30,15 @@ public class HotelSearchController {
                                         @RequestParam(value = "roomCount") Integer roomCount,
                                         @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                         @RequestParam(value = "checkoutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
-                                        Model model) {
+                                        Model model,
+                                        WebRequest webRequest) {
         ResponseEntity<Object> response =null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
         try {
-            response = hotelSearchService.findAllAvailableHotels(page,city,checkinDate,checkoutDate, roomCount);
+            response = hotelSearchService.findAllAvailableHotels("Bearer "+jwt,page,city,checkinDate,checkoutDate, roomCount);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            model.addAttribute("usr", new ValLoginDTO());
+            return "auth/login-page";
         }
         // Ambil response body
         Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
@@ -68,13 +74,16 @@ public class HotelSearchController {
                                             @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                             @RequestParam(value = "checkoutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                                             @RequestParam(value = "roomCount") Integer roomCount,
-                                            Model model) {
+                                            Model model,
+                                            WebRequest webRequest) {
 
         ResponseEntity<Object> response =null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
         try {
-            response = hotelSearchService.findAvailableHotelById(id,checkinDate, checkoutDate, roomCount);
+            response = hotelSearchService.findAvailableHotelById("Bearer "+jwt,id,checkinDate, checkoutDate, roomCount);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            model.addAttribute("usr", new ValLoginDTO());
+            return "auth/login-page";
         }
         // Ambil response body
         Map<String, Object> responseBody = (Map<String, Object>) response.getBody();

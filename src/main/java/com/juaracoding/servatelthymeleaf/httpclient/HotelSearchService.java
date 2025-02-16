@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
@@ -18,14 +19,16 @@ public interface HotelSearchService {
 //                                                         @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
 //                                                         @RequestParam(value = "checkoutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate);
     @GetMapping("")
-    public ResponseEntity<Object> findAllAvailableHotels(@RequestParam(value = "page") Integer page,
+    public ResponseEntity<Object> findAllAvailableHotels(@RequestHeader("Authorization") String token,
+                                                         @RequestParam(value = "page") Integer page,
                                                          @RequestParam(value = "city") String city,
                                                          @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                                          @RequestParam(value = "checkoutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                                                          @RequestParam(value = "roomCount") Integer roomCount);
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findAvailableHotelById(@PathVariable (value = "id") Long id,
+    public ResponseEntity<Object> findAvailableHotelById(@RequestHeader("Authorization") String token,
+                                                         @PathVariable (value = "id") Long id,
                                                          @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                                          @RequestParam(value = "checkoutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                                                          @RequestParam(value = "roomCount") Integer roomCount);

@@ -38,33 +38,15 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand" href="#">Servatel</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/hotel/save}">Add Hotel</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/hotel/list-hotels}">Hotelku</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">List Hotel</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">List User</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/booking/my-bookings}">My Bookings</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#">Login</a></li>
-                        <li><a class="dropdown-item" href="#">Register</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div class="collapse navbar-collapse" id="navbarNav" th:replace="~{fragments/navbar::navheader}"></div>
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary">-->
+<!--    <div class="container">-->
+<!--        <a class="navbar-brand" href="#">Servatel</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</nav>-->
 
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">

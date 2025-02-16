@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.juaracoding</groupId>
@@ -30,6 +30,12 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
