@@ -60,11 +60,22 @@ public class BookingController {
         String jwt = GlobalFunction.tokenCheck(model, webRequest);
         try {
             response = bookingService.createBooking("Bearer "+jwt,bookingRequestDTO);
+            // Ambil response body
+            Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+            if (responseBody != null && (Boolean) responseBody.get("success")) {
+                // Ambil "data" dari response
+                Map<String, Object> bookingDTO = (Map<String, Object>) responseBody.get("data");
+
+
+                model.addAttribute("bookingDTO", bookingDTO);
+            } else {
+                model.addAttribute("message", "No hotels found.");
+            }
         } catch (Exception e) {
             model.addAttribute("usr", new ValLoginDTO());
             return "auth/login-page";
         }
-        return "home";
+        return "booking/payment";
     }
 
     @GetMapping("/my-bookings")

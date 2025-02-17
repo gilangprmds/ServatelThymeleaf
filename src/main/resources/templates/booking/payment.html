@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Payment Page</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #f39c12;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">HOTELMU</a>
+    </div>
+</nav>
+<div class="container">
+    <div class="payment-container">
+        <h4 class="text-center">Konfirmasi Pembayaran</h4>
+        <hr>
+        <div th:object="${bookingDTO}">
+            <p><strong>Nama Pemesan:</strong></p><p th:text="${bookingDTO.customerName}"></p>
+            <p><strong>Hotel:</strong></p><p th:text="${bookingDTO.hotelName}"></p>
+            <p><strong>Check-in:</strong></p><p th:text="${bookingDTO.checkinDate}"></p>
+            <p><strong>Check-out:</strong></p><p th:text="${bookingDTO.checkoutDate}"></p>
+            <p><strong>Total Harga:</strong> IDR 2,000,000</p><p th:text="'$ ' + ${#numbers.formatDecimal(bookingDTO.totalPrice, 1, 'COMMA', 2, 'POINT')}"></p>
+        </div>
+        <hr>
+        <a th:href="@{/payment/create(bookingId=${bookingDTO.id}, amount=${bookingDTO.totalPrice}, email=${bookingDTO.customerEmail})}"class="btn btn-primary w-100 mt-3">Bayar Sekarang</a>
+    </div>
+</div>
+</body>
+</html>
