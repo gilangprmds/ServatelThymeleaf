@@ -32,7 +32,8 @@ public class BookingController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
             @RequestParam Integer roomCount,
-            Model model) {
+            Model model,
+            WebRequest webRequest) {
 
         // Ambil data room dari hotel berdasarkan roomId
         List<Map<String, Object>> rooms = (List<Map<String, Object>>) hotel.get("rooms");
@@ -48,7 +49,10 @@ public class BookingController {
         model.addAttribute("checkoutDate", checkoutDate);
         model.addAttribute("roomCount", roomCount);
         model.addAttribute("durationDays", durationDays);
-
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "booking/confirmation-booking";
     }
 
@@ -75,6 +79,10 @@ public class BookingController {
             model.addAttribute("usr", new ValLoginDTO());
             return "auth/login-page";
         }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "booking/payment";
     }
 
@@ -102,7 +110,10 @@ public class BookingController {
         } else {
             model.addAttribute("message", "No hotels found.");
         }
-
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "customer/my-bookings";
     }
     @GetMapping("/my-booking/{id}")
@@ -128,6 +139,10 @@ public class BookingController {
         } else {
             model.addAttribute("message", "No hotels found.");
         }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "customer/booking-details";
     }
 

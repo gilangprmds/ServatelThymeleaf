@@ -35,7 +35,7 @@ public class HotelController {
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model, webRequest);
         try {
-            response = hotelService.findAllByManagerId("Bearer " + jwt, page, 2L);
+            response = hotelService.findAllByManagerId("Bearer " + jwt, page);
         } catch (Exception e) {
             model.addAttribute("usr", new ValLoginDTO());
             return "auth/login-page";
@@ -49,7 +49,8 @@ public class HotelController {
 
             // Ambil list "content" dari dalam "data"
             List<Map<String, Object>> hotels = (List<Map<String, Object>>) data.get("content");
-
+            Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+            Object username = webRequest.getAttribute("USR_NAME", 1);
             // Kirim data ke UI
 //            model.addAttribute("page", page);
             model.addAttribute("hotel", new HotelRegistrationDTO());
@@ -57,6 +58,9 @@ public class HotelController {
             model.addAttribute("message", responseBody.get("message"));
             model.addAttribute("totalPages", data.get("total-page"));
             model.addAttribute("currentPage", page);
+            /** untuk di set di page home setelah login*/
+            model.addAttribute("MENU_NAVBAR",menuNavBar);
+            model.addAttribute("USR_NAME",username);
         } else {
             model.addAttribute("hotel", new HotelRegistrationDTO());
             model.addAttribute("hotels", List.of());
@@ -104,8 +108,13 @@ public class HotelController {
 
 
     @GetMapping("/save")
-    public String showAddHotelForm(Model model) {
+    public String showAddHotelForm(Model model,
+                                   WebRequest webRequest) {
         model.addAttribute("hotel", new HotelRegistrationDTO());
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "manager/add-hotel-withimage";
     }
 

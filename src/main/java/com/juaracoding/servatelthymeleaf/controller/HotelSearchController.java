@@ -65,7 +65,10 @@ public class HotelSearchController {
             model.addAttribute("hotels", List.of());
             model.addAttribute("message", "No hotels found.");
         }
-
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
      return "/search/search-results";
     }
 
@@ -108,6 +111,10 @@ public class HotelSearchController {
         } else {
             model.addAttribute("message", "No hotels found.");
         }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "/search/search-details";
     }
 }

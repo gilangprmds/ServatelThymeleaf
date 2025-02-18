@@ -3,51 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Hotel</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Add Hotel - HOTELMU</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+        .navbar {
+            background-color: #2c3e50;
+        }
+        .navbar-nav .nav-link {
+            color: white;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #f39c12;
+        }
+        .container-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+        .form-card {
+            width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-header h3 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .form-header p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .btn-primary {
+            background-color: #f39c12;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e67e22;
+        }
+        .btn-secondary {
+            background-color: #2c3e50;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #34495e;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .input-group-text {
+            background: #f39c12;
+            color: white;
+            border: none;
+        }
+        .input-group-text i {
+            font-size: 14px;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>Add Hotel</h2>
-    <form th:action="@{/hotel/save}" enctype="multipart/form-data" method="post">
-        <div class="mb-3">
-            <label for="hotelName" class="form-label">Hotel Name</label>
-            <input type="text" class="form-control" id="hotelName" name="name" required>
+
+<!-- 🔥 Navbar -->
+<div th:replace="~{fragments/navbar::navheader}"></div>
+
+<!-- 🔥 Form Add Hotel -->
+<div class="container-form">
+    <div class="form-card">
+        <div class="form-header">
+            <h3>Add New Hotel</h3>
+            <p>Lengkapi informasi hotel dengan benar untuk meningkatkan kepercayaan pelanggan.</p>
         </div>
-        <div class="mb-3">
-            <label for="streetName" class="form-label">Street Name</label>
-            <input type="text" class="form-control" id="streetName" name="address.streetName" required>
-        </div>
-        <div class="mb-3">
-            <label for="city" class="form-label">City</label>
-            <input type="text" class="form-control" id="city" name="address.city" required>
-        </div>
-        <div class="mb-3">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" class="form-control" id="country" name="address.country" required>
-        </div>
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Hotel Images</label>
-            <div id="hotelImagesContainer"></div>
-            <button type="button" class="btn btn-secondary btn-sm" id="addHotelImage">Add Image</button>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Rooms</label>
-            <div id="roomsContainer"></div>
-            <button type="button" class="btn btn-secondary btn-sm" id="addRoom">Add Room</button>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Hotel</button>
-    </form>
+        <form th:action="@{/hotel/save}" enctype="multipart/form-data" method="post">
+            <div class="form-group">
+                <label for="hotelName" class="form-label">Hotel Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-hotel"></i></span>
+                    <input type="text" class="form-control" id="hotelName" name="name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="streetName" class="form-label">Street Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-road"></i></span>
+                    <input type="text" class="form-control" id="streetName" name="address.streetName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="city" class="form-label">City</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-city"></i></span>
+                    <input type="text" class="form-control" id="city" name="address.city" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="country" class="form-label">Country</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                    <input type="text" class="form-control" id="country" name="address.country" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hotel Images</label>
+                <div id="hotelImagesContainer"></div>
+                <button type="button" class="btn btn-secondary btn-sm w-100 mt-2" id="addHotelImage">Add Image</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Rooms</label>
+                <div id="roomsContainer"></div>
+                <button type="button" class="btn btn-secondary btn-sm w-100 mt-2" id="addRoom">Add Room</button>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Save Hotel</button>
+        </form>
+    </div>
 </div>
 
 <script>
     document.getElementById("addHotelImage").addEventListener("click", function() {
         let container = document.getElementById("hotelImagesContainer");
-        let index = container.children.length;
         let input = document.createElement("input");
         input.type = "file";
         input.className = "form-control mb-2";
@@ -75,24 +162,11 @@
                     <input type="number" class="form-control" name="rooms[${index}].roomCount" placeholder="Room Count" required>
                     <input type="number" class="form-control" name="rooms[${index}].pricePerNight" placeholder="Price Per Night" required>
                 </div>
-                <div class="mt-2">
-                    <label class="form-label">Room Images</label>
-                    <div id="roomImagesContainer-${index}"></div>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="addRoomImage(${index})">Add Room Image</button>
-                </div>
             </div>`;
         document.getElementById("roomsContainer").insertAdjacentHTML("beforeend", newRoom);
     });
-
-    function addRoomImage(index) {
-        let container = document.getElementById(`roomImagesContainer-${index}`);
-        let input = document.createElement("input");
-        input.type = "file";
-        input.className = "form-control mb-2";
-        input.name = `rooms[${index}].roomImages`;
-        input.accept = "image/*";
-        container.appendChild(input);
-    }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

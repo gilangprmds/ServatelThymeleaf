@@ -28,10 +28,9 @@ public interface HotelService {
     public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token,
                                           @RequestParam(value = "page") Integer page);
 
-    @GetMapping("/manager/hotels/{id}")
+    @GetMapping("/manager/hotels")
     public ResponseEntity<Object> findAllByManagerId( @RequestHeader("Authorization") String token,
-                                                      @RequestParam(value = "page") Integer page,
-                                                      @PathVariable(value = "id") Long id);
+                                                      @RequestParam(value = "page") Integer page);
 
 
 
