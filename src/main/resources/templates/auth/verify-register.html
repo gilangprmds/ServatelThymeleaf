@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .otp-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        .otp-container h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .otp-container p {
+            font-size: 14px;
+            color: #555;
+        }
+        .otp-input {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 10px;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 15px 0;
+        }
+        .btn-primary {
+            background-color: #f39c12;
+            border: none;
+            font-size: 14px;
+            padding: 10px;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #e67e22;
+        }
+        .resend-link {
+            font-size: 14px;
+            color: #f39c12;
+            cursor: pointer;
+            display: block;
+            margin-top: 10px;
+        }
+        .resend-link:hover {
+            text-decoration: underline;
+            color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <h2>Verifikasi OTP</h2>
+    <p>Masukkan kode OTP yang telah dikirim ke email <span th:text="${email}"></span>.</p>
+    <form th:action="@{/auth/verify-regis}" method="post">
+        <input type="text" class="otp-input" name="otp" maxlength="6" required>
+        <input type="hidden" name="email" th:value="${email}">
+        <button type="submit" class="btn btn-primary mt-3">Verifikasi</button>
+    </form>
+    <a href="#" class="resend-link">Kirim ulang OTP</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

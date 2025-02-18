@@ -1,11 +1,12 @@
 package com.juaracoding.servatelthymeleaf.controller;
 
 import com.juaracoding.servatelthymeleaf.dto.validasi.ValLoginDTO;
+import com.juaracoding.servatelthymeleaf.dto.validasi.ValRegisDTO;
+import com.juaracoding.servatelthymeleaf.dto.validasi.ValVerifyRegisDTO;
 import com.juaracoding.servatelthymeleaf.httpclient.AuthService;
 import com.juaracoding.servatelthymeleaf.util.GenerateStringMenu;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -71,6 +72,77 @@ public class AuthController {
         model.addAttribute("USR_NAME",valLoginDTO.getUsername());
 //        model.addAttribute("URL_IMG",urlImg);
         return "home-new2";
+    }
+
+    @GetMapping("/register")
+    public String showRegister(Model model) {
+        model.addAttribute("usrRegis", new ValRegisDTO());
+        return "/auth/register";
+    }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute("usrRegis")
+                        @Valid ValRegisDTO valRegisDTO,
+                        BindingResult result,
+                        Model model,
+                        WebRequest webRequest){
+        if(result.hasErrors()){
+            return "auth/register";
+        }
+
+//        valLoginDTO.setPassword(new String(Base64.decode(valLoginDTO.getPassword())));
+        ResponseEntity<Object> response = null;
+        String otp = "";
+        try{
+            response = authService.register(valRegisDTO);
+            Map<String,Object> map = (Map<String, Object>) response.getBody();
+
+            otp = map.get("token").toString();
+        }catch (Exception e){
+
+            model.addAttribute("usrRegis",new ValRegisDTO());
+            result.addError(new ObjectError("globalError",e.getMessage()==null?e.getCause().getMessage():e.getMessage()));
+            return "/auth/register";
+        }
+        /** untuk di set di table session */
+
+//        webRequest.setAttribute("EMAIL",valRegisDTO.getEmail(),1);
+
+        /** untuk di set di page home setelah login*/
+        model.addAttribute("email",valRegisDTO.getEmail());
+//        model.addAttribute("URL_IMG",urlImg);
+        return "/auth/verify-register";
+    }
+
+
+    @PostMapping("/verify-regis")
+    public String verifyRegister(@ModelAttribute("usrVerifRegis")
+                           @Valid ValVerifyRegisDTO valVerifyRegisDTO,
+                           BindingResult result,
+                           Model model,
+                           WebRequest webRequest){
+        if(result.hasErrors()){
+            return "auth/register";
+        }
+
+//        valLoginDTO.setPassword(new String(Base64.decode(valLoginDTO.getPassword())));
+        ResponseEntity<Object> response = null;
+        String message = "";
+        try{
+            response = authService.verifyRegister(valVerifyRegisDTO);
+            Map<String,Object> map = (Map<String, Object>) response.getBody();
+
+            message = map.get("message").toString();
+//            message = (String) map.get("message");
+        }catch (Exception e){
+
+            model.addAttribute("message","Register Error");
+            return "/auth/login-page";
+        }
+        /** untuk di set di page home setelah login*/
+        model.addAttribute("usr", new ValLoginDTO());
+        model.addAttribute("message",message);
+        return "/auth/login-page";
     }
 
     @GetMapping("/logout")

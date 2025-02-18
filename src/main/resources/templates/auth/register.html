@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi Akun</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .register-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        .register-container h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-control {
+            font-size: 14px;
+            padding: 8px;
+        }
+        .btn-primary {
+            background-color: #f39c12;
+            border: none;
+            font-size: 14px;
+            padding: 10px;
+        }
+        .btn-primary:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <h2>Registrasi Akun</h2>
+    <form th:action="@{/auth/register}" th:object="${usrRegis}" method="post">
+        <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+            <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+        </div>
+        <div class="mb-2">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" th:field="*{username}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('username')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="firstName" class="form-label">Nama Depan</label>
+            <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="lastName" class="form-label">Nama Belakang</label>
+            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="address" class="form-label">Alamat</label>
+            <textarea class="form-control" id="address" th:field="*{address}" rows="2" required></textarea>
+            <ul>
+                <li th:each="err : ${#fields.errors('address')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="noHp" class="form-label">Nomor HP</label>
+            <input type="tel" class="form-control" id="noHp" th:field="*{noHp}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('noHp')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <div class="mb-2">
+            <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+            <input type="date" class="form-control" id="tanggalLahir" th:field="*{tanggalLahir}" required>
+            <ul>
+                <li th:each="err : ${#fields.errors('tanggalLahir')}" th:text="${err}" class="error"></li>
+            </ul>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-2">Daftar</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
