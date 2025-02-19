@@ -1,8 +1,6 @@
 package com.juaracoding.servatelthymeleaf.httpclient;
 
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValLoginDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValRegisDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValVerifyRegisDTO;
+import com.juaracoding.servatelthymeleaf.dto.validasi.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -22,4 +20,12 @@ public interface AuthService {
     public ResponseEntity<Object> verifyRegister(@RequestBody ValVerifyRegisDTO valVerifyRegisDTO);
 
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Object> forgotPassword(@RequestBody ValForgotPasswordDTO valForgotPasswordDTO);
+
+    @PostMapping("/checking-password")
+    public ResponseEntity<Object> checkingOtp(@RequestBody ValOtpDTO valOtpDTO);
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Object> changePassword(@RequestBody ValChangePasswordDTO valChangePasswordDTO);
 }

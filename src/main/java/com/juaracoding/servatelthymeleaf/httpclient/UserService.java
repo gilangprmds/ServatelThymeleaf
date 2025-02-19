@@ -1,5 +1,6 @@
 package com.juaracoding.servatelthymeleaf.httpclient;
 
+import com.juaracoding.servatelthymeleaf.dto.validasi.ValForgotPasswordDTO;
 import com.juaracoding.servatelthymeleaf.dto.validasi.ValUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -26,4 +27,5 @@ public interface UserService {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@RequestHeader("Authorization") String token,
                                          @PathVariable(value = "id") Long id);
+
 }

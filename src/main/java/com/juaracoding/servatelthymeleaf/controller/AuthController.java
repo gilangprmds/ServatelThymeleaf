@@ -1,8 +1,6 @@
 package com.juaracoding.servatelthymeleaf.controller;
 
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValLoginDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValRegisDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValVerifyRegisDTO;
+import com.juaracoding.servatelthymeleaf.dto.validasi.*;
 import com.juaracoding.servatelthymeleaf.httpclient.AuthService;
 import com.juaracoding.servatelthymeleaf.util.GenerateStringMenu;
 import jakarta.servlet.http.HttpServletRequest;
@@ -145,9 +143,116 @@ public class AuthController {
         return "/auth/login-page";
     }
 
+    @GetMapping("/forgot-password")
+    public String showForgotPassword(Model model) {
+        model.addAttribute("usrForgotPassword", new ValForgotPasswordDTO());
+        return "/auth/forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@ModelAttribute("usrForgotPassword")
+                           @Valid ValForgotPasswordDTO valForgotPasswordDTO,
+                           BindingResult result,
+                           Model model,
+                           WebRequest webRequest){
+        if(result.hasErrors()){
+            return "auth/forgot-password";
+        }
+
+//        valLoginDTO.setPassword(new String(Base64.decode(valLoginDTO.getPassword())));
+        ResponseEntity<Object> response = null;
+        String message = "";
+        try{
+            response = authService.forgotPassword(valForgotPasswordDTO);
+            Map<String,Object> map = (Map<String, Object>) response.getBody();
+
+            message = map.get("message").toString();
+        }catch (Exception e){
+
+            model.addAttribute("usrForgotPassword",new ValForgotPasswordDTO());
+            result.addError(new ObjectError("globalError",e.getMessage()==null?e.getCause().getMessage():e.getMessage()));
+            return "/auth/forgot-password";
+        }
+        /** untuk di set di table session */
+
+//        webRequest.setAttribute("EMAIL",valRegisDTO.getEmail(),1);
+
+        /** untuk di set di page home setelah login*/
+        model.addAttribute("email",valForgotPasswordDTO.getEmail());
+        model.addAttribute("message",message);
+//        model.addAttribute("URL_IMG",urlImg);
+        return "/auth/checking-otp-forgot";
+    }
+
+    @PostMapping("/checking-otp-forgot")
+    public String checkingOtpForgot(@ModelAttribute("usrOtp")
+                                 @Valid ValOtpDTO valOtpDTO,
+                                    BindingResult result,
+                                    Model model,
+                                    WebRequest webRequest){
+        if(result.hasErrors()){
+            return "auth/checking-otp-forgot";
+        }
+
+//        valLoginDTO.setPassword(new String(Base64.decode(valLoginDTO.getPassword())));
+        ResponseEntity<Object> response = null;
+        String message = "";
+        try{
+            response = authService.checkingOtp(valOtpDTO);
+            Map<String,Object> responseBody = (Map<String, Object>) response.getBody();
+            if (responseBody != null && (Boolean) responseBody.get("success")){
+                message = responseBody.get("message").toString();
+            }else {
+                model.addAttribute("email",valOtpDTO.getEmail());
+                model.addAttribute("message","otp tidak valid");
+                return "auth/checking-otp-forgot";
+            }
+        }catch (Exception e){
+            model.addAttribute("email",valOtpDTO.getEmail());
+            model.addAttribute("message","otp tidak valid");
+            return "auth/checking-otp-forgot";
+        }
+        /** untuk di set di page home setelah login*/
+        model.addAttribute("usrChangePassword", new ValChangePasswordDTO());
+        model.addAttribute("email",valOtpDTO.getEmail());
+        model.addAttribute("message",message);
+        return "/auth/change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@ModelAttribute("usrChangePassword")
+                                 @Valid ValChangePasswordDTO valChangePasswordDTO,
+                                 BindingResult result,
+                                 Model model,
+                                 WebRequest webRequest){
+        if(result.hasErrors()){
+            return "auth/register";
+        }
+
+//        valLoginDTO.setPassword(new String(Base64.decode(valLoginDTO.getPassword())));
+        ResponseEntity<Object> response = null;
+        String message = "";
+        try{
+            response = authService.changePassword(valChangePasswordDTO);
+            Map<String,Object> map = (Map<String, Object>) response.getBody();
+            message = map.get("message").toString();
+//            message = (String) map.get("message");
+        }catch (Exception e){
+
+            model.addAttribute("message","Ubah Password Error");
+            return "/auth/login-page";
+        }
+        /** untuk di set di page home setelah login*/
+        model.addAttribute("usr", new ValLoginDTO());
+        model.addAttribute("message",message);
+        return "/auth/login-page";
+    }
+
+
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request) {
         request.getSession().invalidate();
         return "redirect:/";
     }
+
 }
