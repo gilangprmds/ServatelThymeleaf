@@ -155,14 +155,17 @@
         }
 
         let newRoom = `<div class="room-group mb-3">
-                <div class="input-group">
+                <div class="input-group mb-2">
                     <select class="form-select" name="rooms[${index}].roomType">
                         ${availableOptions.map(opt => `<option value="${opt}">${opt.replace('_', ' ')}</option>`).join('')}
                     </select>
                     <input type="number" class="form-control" name="rooms[${index}].roomCount" placeholder="Room Count" required>
                     <input type="number" class="form-control" name="rooms[${index}].pricePerNight" placeholder="Price Per Night" required>
                 </div>
+                <label class="form-label">Room Image</label>
+                <input type="file" class="form-control" name="roomsImages" accept="image/*" required>
             </div>`;
+
         document.getElementById("roomsContainer").insertAdjacentHTML("beforeend", newRoom);
     });
 </script>

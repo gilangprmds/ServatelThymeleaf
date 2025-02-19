@@ -19,4 +19,7 @@ public interface BookingService {
     @GetMapping("/my-booking/{id}")
     public ResponseEntity<Object> findBookingById(@RequestHeader("Authorization") String token,
                                                   @PathVariable("id") Long id);
+
+    @GetMapping("/booking-list")
+    public ResponseEntity<Object> findAllBookingsByManagerId(@RequestHeader("Authorization") String token);
 }

@@ -22,7 +22,8 @@ public interface HotelService {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> save(@RequestHeader("Authorization") String token,
                                        @RequestPart("hotel") String hotelJson,
-                                       @RequestPart("hotelImages") List<MultipartFile> hotelImages);
+                                       @RequestPart("hotelImages") List<MultipartFile> hotelImages,
+                                       @RequestPart("roomsImages") List<MultipartFile> roomImages);
 
     @GetMapping("/hotels")
     public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token,

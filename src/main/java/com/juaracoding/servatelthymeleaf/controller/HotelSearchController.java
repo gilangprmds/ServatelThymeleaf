@@ -115,6 +115,6 @@ public class HotelSearchController {
         Object username = webRequest.getAttribute("USR_NAME", 1);
         model.addAttribute("MENU_NAVBAR",menuNavBar);
         model.addAttribute("USR_NAME",username);
-        return "/search/search-details";
+        return "/search/search-details-new";
     }
 }

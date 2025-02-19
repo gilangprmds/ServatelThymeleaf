@@ -121,6 +121,7 @@ public class HotelController {
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute(name = "hotel") HotelRegistrationDTO hotelRegistrationDTO,
                        @RequestPart("hotelImages") List<MultipartFile> hotelImages,
+                       @RequestPart("roomsImages") List<MultipartFile> roomsImages,
                        BindingResult result,
                        Model model,
                        WebRequest webRequest) {
@@ -133,7 +134,7 @@ public class HotelController {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String hotelJson = objectMapper.writeValueAsString(hotelRegistrationDTO);
-            response = hotelService.save("Bearer "+jwt,hotelJson, hotelImages);
+            response = hotelService.save("Bearer "+jwt,hotelJson, hotelImages, roomsImages);
         } catch (Exception e) {
             model.addAttribute("usr", new ValLoginDTO());
             return "auth/login-page";

@@ -146,4 +146,65 @@ public class BookingController {
         return "customer/booking-details";
     }
 
+    @GetMapping("/booking-list")
+    public String showBookingList(Model model, WebRequest webRequest) {
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        try{
+            response = bookingService.findAllBookingsByManagerId("Bearer "+jwt);
+        } catch (Exception e) {
+            model.addAttribute("usr", new ValLoginDTO());
+            return "auth/login-page";
+        }
+        // Ambil response body
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+        if (responseBody != null && (Boolean) responseBody.get("success")) {
+            // Ambil "data" dari response
+//            Map<String, Object> bookings = (Map<String, Object>) responseBody.get("data");
+            List<Map<String, Object>> bookings = (List<Map<String, Object>>) responseBody.get("data");
+
+
+            // Kirim data ke UI
+//            model.addAttribute("page", page);
+            model.addAttribute("bookings", bookings);
+        } else {
+            model.addAttribute("message", "No hotels found.");
+        }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
+        return "manager/booking-list";
+    }
+
+    @GetMapping("/booking-list/{id}")
+    public String showBookingDetailsManager(@PathVariable(value = "id") Long id, Model model,
+                                     WebRequest webRequest) {
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        try{
+            response = bookingService.findBookingById("Bearer "+jwt,id);
+        } catch (Exception e) {
+            model.addAttribute("usr", new ValLoginDTO());
+            return "auth/login-page";
+        }
+        // Ambil response body
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+        if (responseBody != null && (Boolean) responseBody.get("success")) {
+            // Ambil "data" dari response
+            Map<String, Object> bookingDTO = (Map<String, Object>) responseBody.get("data");
+
+            // Kirim data ke UI
+//            model.addAttribute("page", page);
+            model.addAttribute("bookingDTO", bookingDTO);
+        } else {
+            model.addAttribute("message", "No hotels found.");
+        }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
+        return "manager/booking-details-manager";
+    }
+
 }
