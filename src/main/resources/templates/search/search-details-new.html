@@ -67,6 +67,10 @@
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .carousel-item img {
+            max-height: 500px; /* Sesuaikan tinggi maksimum */
+            object-fit: cover; /* Agar gambar tetap rapi */
+        }
     </style>
 </head>
 <body>
@@ -141,6 +145,10 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
+        </section>
+        <section class="hotel-info text-center mt-4">
+            <h2 th:text="${hotel.name}">Nama Hotel</h2>
+            <p class="fs-5" th:text="${hotel.address.streetName + ', ' + hotel.address.city + ', ' + hotel.address.country}">Alamat Hotel</p>
         </section>
         <section>
             <div class="row" th:each="room : ${hotel.rooms}">

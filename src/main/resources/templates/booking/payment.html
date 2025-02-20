@@ -44,7 +44,7 @@
             <p><strong>Hotel:</strong></p><p th:text="${bookingDTO.hotelName}"></p>
             <p><strong>Check-in:</strong></p><p th:text="${bookingDTO.checkinDate}"></p>
             <p><strong>Check-out:</strong></p><p th:text="${bookingDTO.checkoutDate}"></p>
-            <p><strong>Total Harga:</strong> IDR 2,000,000</p><p th:text="'$ ' + ${#numbers.formatDecimal(bookingDTO.totalPrice, 1, 'COMMA', 2, 'POINT')}"></p>
+            <p><strong>Total Harga:<p th:text="'$ ' + ${#numbers.formatDecimal(bookingDTO.totalPrice, 1, 'COMMA', 2, 'POINT')}"></strong></p>
         </div>
         <hr>
         <a th:href="@{/payment/create(bookingId=${bookingDTO.id}, amount=${bookingDTO.totalPrice}, email=${bookingDTO.customerEmail})}"class="btn btn-primary w-100 mt-3">Bayar Sekarang</a>

@@ -85,7 +85,7 @@
                             <p class="text-muted">
                                 Average Price: <strong>Rp <span th:text="${hotel.get('rooms')[0].get('pricePerNight')}"></span></strong> / night
                             </p>
-                            <a href="#" class="btn btn-warning">View Details</a>
+                            <a th:href="@{/hotel/{id}(id=${hotel.id})}" class="btn btn-warning">View Details</a>
                         </div>
                     </div>
                 </div>

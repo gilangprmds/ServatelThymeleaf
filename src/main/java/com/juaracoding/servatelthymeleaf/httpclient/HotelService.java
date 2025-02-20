@@ -33,6 +33,10 @@ public interface HotelService {
     public ResponseEntity<Object> findAllByManagerId( @RequestHeader("Authorization") String token,
                                                       @RequestParam(value = "page") Integer page);
 
+    @GetMapping("/hotel/{id}")
+    public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token,
+                                           @PathVariable(value = "id") Long id);
+
 
 
 //    @PostMapping(value = "/save", consumes = "multipart/form-data")

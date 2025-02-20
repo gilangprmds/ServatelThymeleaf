@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.hibernate.cache.RegionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +71,49 @@ public class HotelController {
         }
         return "manager/list-hotel";
     }
+    @GetMapping("/{id}")
+    public String showHotelDetails(@PathVariable (value = "id") Long id,
+                                            Model model,
+                                            WebRequest webRequest) {
+
+        ResponseEntity<Object> response =null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        try {
+            response = hotelService.findById("Bearer " + jwt, id);
+//            response = hotelSearchService.findAvailableHotelById("Bearer "+jwt,id,checkinDate, checkoutDate, roomCount);
+        } catch (Exception e) {
+            model.addAttribute("usr", new ValLoginDTO());
+            return "auth/login-page";
+        }
+        // Ambil response body
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+
+        if (responseBody != null && (Boolean) responseBody.get("success")) {
+            // Ambil "data" dari response
+            Map<String, Object> hotel = (Map<String, Object>) responseBody.get("data");
+            Map<String, String> address = (Map<String, String>) hotel.get("address");
+            String city = address.get("city");
+
+//            Long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+
+            // Kirim data ke UI
+//            model.addAttribute("page", page);
+            model.addAttribute("hotel", hotel);
+//            model.addAttribute("durationDays", durationDays);
+            // Menyimpan parameter pencarian untuk dipertahankan dalam pagination
+//            model.addAttribute("checkinDate", checkinDate);
+//            model.addAttribute("checkoutDate", checkoutDate);
+//            model.addAttribute("roomCount", roomCount);
+            model.addAttribute("city", city);
+        } else {
+            model.addAttribute("message", "No hotels found.");
+        }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
+        return "/manager/hotel-details";
+    }
 
     @GetMapping("/hotels")
     public String listAllHotels(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -103,6 +149,10 @@ public class HotelController {
             model.addAttribute("hotels", List.of());
             model.addAttribute("message", "No hotels found.");
         }
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
         return "admin/list-all-hotels";
     }
 

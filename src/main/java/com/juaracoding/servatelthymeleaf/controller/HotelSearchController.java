@@ -72,6 +72,7 @@ public class HotelSearchController {
      return "/search/search-results";
     }
 
+
     @GetMapping("/{id}")
     public String showHotelAvailableDetails(@PathVariable (value = "id") Long id,
                                             @RequestParam(value = "checkinDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,

@@ -40,6 +40,20 @@
         .btn-register:hover {
             background-color: #34495e;
         }
+        .password-wrapper {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+        }
+        .toggle-password:hover {
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -82,7 +96,12 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" th:field="*{password}" class="form-control" required />
+                <div class="password-wrapper">
+                    <input type="password" id="password" th:field="*{password}" class="form-control" required />
+                    <span class="toggle-password" onclick="togglePasswordVisibility()">
+                        🔒
+                    </span>
+                </div>
                 <ul>
                     <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error"></li>
                 </ul>
@@ -109,6 +128,19 @@
             myModal.show();
         }
     });
+
+    function togglePasswordVisibility() {
+        var passwordField = document.getElementById("password");
+        var toggleIcon = document.querySelector(".toggle-password");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "👁"; // Ganti ikon menjadi mata terbuka
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "🔒"; // Ganti ikon menjadi kunci
+        }
+    }
 </script>
 
 </body>
