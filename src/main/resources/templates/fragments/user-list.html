@@ -1,0 +1,33 @@
+<!-- fragments/user-list.html -->
+<div th:fragment="userList">
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-warning">
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Name</th>
+      <th>Last Name</th>
+      <th>Role</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="align-middle" th:each="user : ${users}">
+      <td th:text="${user.id}"></td>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.firstName}"></td>
+      <td th:text="${user.lastName}"></td>
+      <td th:text="${user.roleType}"></td>
+      <td><a th:href="@{/user/edit/{id}(id=${user.id})}">Edit</a></td>
+      <td>
+        <button th:if="${user.roleType != 'ADMIN'}" type="button" class="btn btn-danger btn-sm"
+                data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
+                th:attr="data-user-id=${user.id}, data-user-name=${user.username}">
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

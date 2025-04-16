@@ -1,3 +1,4 @@
+
  document.addEventListener("DOMContentLoaded", function () {
     let today = new Date().toISOString().split("T")[0];
     let checkInInput = document.getElementById("checkinDate");
@@ -19,3 +20,4 @@
 }
 });
 });
+

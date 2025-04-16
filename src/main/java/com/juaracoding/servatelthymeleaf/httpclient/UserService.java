@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public interface UserService {
 
     @GetMapping("")
-    public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token);
+    public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token,
+                                          @RequestParam(value = "id", required = false) Long id);
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token,
@@ -27,5 +28,9 @@ public interface UserService {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@RequestHeader("Authorization") String token,
                                          @PathVariable(value = "id") Long id);
+
+    @PostMapping("")
+    public ResponseEntity<Object> addManager(@RequestHeader("Authorization") String token,
+                                         @RequestBody ValUserDTO userDTO);
 
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Search Form -->
+<div class="container mt-5" th:fragment="search-form">
+  <form th:action="@{/search}" method="get" class="search-form">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-3">
+        <label for="cityInput" class="form-label">Pilih Kota</label>
+<!--        <input id="city" name="city" type="text" class="form-control" th:value="${city}" required>-->
+        <input type="text"  name ="city" id="cityInput" class="form-control" th:value="${city}" placeholder="Cari kota...">
+      </div>
+      <div class="col-md-2">
+        <label for="roomCount" class="form-label">JumlahTamu</label>
+        <select id="roomCount" name="roomCount" class="form-select">
+          <option value="1" th:selected="${roomCount == 1}">1</option>
+          <option value="2" th:selected="${roomCount == 2}">2</option>
+          <option value="3" th:selected="${roomCount == 3}">3</option>
+          <option value="4" th:selected="${roomCount == 4}">4</option>
+          <option value="5" th:selected="${roomCount == 5}">5</option>
+          <option value="6" th:selected="${roomCount == 6}">6</option>
+          <option value="7" th:selected="${roomCount == 7}">7</option>
+          <option value="8" th:selected="${roomCount == 8}">8</option>
+          <option value="9" th:selected="${roomCount == 9}">9</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="checkinDate" class="form-label">Check-in</label>
+        <input id="checkinDate" name="checkinDate" type="date" class="form-control" th:value="${checkinDate}" required>
+      </div>
+      <div class="col-md-3">
+        <label for="checkoutDate" class="form-label">Check-out</label>
+        <input id="checkoutDate" name="checkoutDate" type="date" class="form-control" th:value="${checkoutDate}" required>
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-warning w-100">Search Now</button>
+      </div>
+    </div>
+  </form>
+</div>
+</html>

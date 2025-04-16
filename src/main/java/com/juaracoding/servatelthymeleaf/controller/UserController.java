@@ -1,9 +1,6 @@
 package com.juaracoding.servatelthymeleaf.controller;
 
-import com.juaracoding.servatelthymeleaf.dto.validasi.RespRoleDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValLoginDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValRegisDTO;
-import com.juaracoding.servatelthymeleaf.dto.validasi.ValUserDTO;
+import com.juaracoding.servatelthymeleaf.dto.validasi.*;
 import com.juaracoding.servatelthymeleaf.httpclient.UserService;
 import com.juaracoding.servatelthymeleaf.util.GlobalFunction;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,35 +27,45 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("")
-    public String showAllUsers(Model model,
-                               WebRequest webRequest) {
-        ResponseEntity<Object> response = null;
+    public String showAllUsers(@RequestParam(value = "id", required = false) Long id,
+                               Model model,
+                               WebRequest webRequest,
+                               @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
+        ResponseEntity<Object> response;
         String jwt = GlobalFunction.tokenCheck(model, webRequest);
+
         try {
-            response = userService.findAll("Bearer " + jwt);
+            response = userService.findAll("Bearer " + jwt, id);
         } catch (Exception e) {
             model.addAttribute("usr", new ValLoginDTO());
             return "auth/login-page";
         }
-        // Ambil response body
+
         Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
         if (responseBody != null && (Boolean) responseBody.get("success")) {
-            // Ambil "data" dari response
             Map<String, Object> getData = (Map<String, Object>) responseBody.get("data");
             List<Map<String, Object>> users = (List<Map<String, Object>>) getData.get("content");
-            // Kirim data ke UI
-//            model.addAttribute("page", page);
             model.addAttribute("users", users);
+
         } else {
             model.addAttribute("message", "No user found.");
         }
-        Object menuNavBar = webRequest.getAttribute("MENU_NAVBAR", 1);
-        Object username = webRequest.getAttribute("USR_NAME", 1);
-        model.addAttribute("MENU_NAVBAR", menuNavBar);
-        model.addAttribute("USR_NAME", username);
+        if ("XMLHttpRequest".equals(requestedWith)) {
+            return "fragments/user-list :: userList";// hanya kirim tabel-nya saja
+        }
 
-        return "admin/user-list";
+
+        model.addAttribute("MENU_NAVBAR", webRequest.getAttribute("MENU_NAVBAR", 1));
+        model.addAttribute("USR_NAME", webRequest.getAttribute("USR_NAME", 1));
+        return "admin/user-list"; // kirim full page saat non-AJAX
     }
+
+//    @GetMapping("/test-fragment")
+//    public String testFragment(Model model) {
+//        model.addAttribute("users", userService.getAllUsers());
+//        return "fragments/user-list :: userList";
+//    }
+
 
     @GetMapping("/edit/{id}")
     public String showEditUser(@PathVariable Long id, Model model, WebRequest webRequest) {
@@ -91,6 +98,10 @@ public class UserController {
             model.addAttribute("message", "User not found.");
             return "admin/user-list";
         }
+        Object menuNavBar = webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR", menuNavBar);
+        model.addAttribute("USR_NAME", username);
         return "admin/user-edit";
     }
 
@@ -117,7 +128,67 @@ public class UserController {
         Object username = webRequest.getAttribute("USR_NAME", 1);
         model.addAttribute("MENU_NAVBAR", menuNavBar);
         model.addAttribute("USR_NAME", username);
+        redirectAttributes.addFlashAttribute("message", "User ID: "+id + " has been updated.");
         redirectAttributes.addFlashAttribute("updatedUserId", id);
-        return "redirect:/user?success";
+        return "redirect:/user";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteUser( @PathVariable(value = "id") Long id,
+                              Model model,
+                              WebRequest webRequest,
+                              RedirectAttributes redirectAttributes){
+
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        try {
+            response = userService.delete("Bearer " + jwt, id);
+        } catch (Exception e) {
+            return "redirect:/user";
+        }
+        Object menuNavBar = webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR", menuNavBar);
+        model.addAttribute("USR_NAME", username);
+        redirectAttributes.addFlashAttribute("deletedUserId", id);
+        redirectAttributes.addFlashAttribute("message", "User ID: "+id + " has been deleted.");
+        return "redirect:/user";
+    }
+
+    @GetMapping("/add-manager")
+    public String showAddManager(Model model, WebRequest webRequest) {
+        model.addAttribute("valUserDTO", new ValUserDTO());
+        Object menuNavBar =webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR",menuNavBar);
+        model.addAttribute("USR_NAME",username);
+        return "admin/add-manager";
+    }
+
+    @PostMapping("/add-manager")
+    public String addManager(@ModelAttribute("valUserDTO") @Valid ValUserDTO valUserDTO,
+                            BindingResult result,
+                            Model model,
+                            WebRequest webRequest,
+                            RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()){
+            return "/admin/user-edit";
+        }
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model, webRequest);
+        try {
+            response = userService.addManager("Bearer " + jwt , valUserDTO);
+        } catch (Exception e) {
+            model.addAttribute("valUserDTO", valUserDTO);
+            result.addError(new ObjectError("globalError", e.getMessage() == null ? e.getCause().getMessage() : e.getMessage()));
+            return "/admin/user-edit";
+        }
+        Object menuNavBar = webRequest.getAttribute("MENU_NAVBAR", 1);
+        Object username = webRequest.getAttribute("USR_NAME", 1);
+        model.addAttribute("MENU_NAVBAR", menuNavBar);
+        model.addAttribute("USR_NAME", username);
+//        redirectAttributes.addFlashAttribute("message", "User ID: "+id + " has been updated.");
+//        redirectAttributes.addFlashAttribute("updatedUserId", id);
+        return "redirect:/user";
     }
 }

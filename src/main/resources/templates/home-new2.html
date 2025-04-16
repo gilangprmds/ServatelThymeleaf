@@ -8,6 +8,9 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
     <style>
         .carousel {
             position: relative;
@@ -74,6 +77,49 @@
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .col-md-3 {
+            position: relative;
+        }
+
+        /*#suggestions {*/
+        /*    z-index: 9999;*/
+        /*    background-color: white;*/
+        /*    width: 100%;*/
+        /*    max-height: 200px;*/
+        /*    overflow-y: auto;*/
+        /*    border: 1px solid #ccc;*/
+        /*    position: absolute;*/
+        /*}*/
+        /* Gaya dropdown autocomplete */
+        .ui-autocomplete {
+            z-index: 9999 !important;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Item dalam list */
+        .ui-menu-item {
+            list-style: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        /* Hover dan focus */
+        .ui-menu-item:hover,
+        .ui-menu-item-wrapper.ui-state-active {
+            background-color: #f0f0f0;
+            color: #333;
+            border-radius: 8px;
+        }
+        .ui-menu-item {
+            transition: background-color 0.2s ease;
+        }
     </style>
 </head>
 <body>
@@ -105,8 +151,11 @@
     <form th:action="@{/search}" method="get" class="search-form">
         <div class="row g-3 align-items-center">
             <div class="col-md-3">
-                <label for="city" class="form-label">Pilih Kota</label>
-                <input id="city" name="city" type="text" class="form-control" placeholder="Masukkan Kota" required>
+                <label for="cityInput" class="form-label">Pilih Kota</label>
+                <input type="text"  name ="city" id="cityInput" class="form-control" placeholder="Cari kota...">
+
+<!--                <input id="city" name="city" type="text" class="form-control" placeholder="Masukkan Kota" autocomplete="off" required>-->
+                <ul id="suggestions" class="list-group position-absolute"></ul>
             </div>
             <div class="col-md-2">
                 <label for="roomCount" class="form-label">Jumlah Kamar</label>
@@ -220,6 +269,8 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script crossorigin="anonymous" integrity="sha384-oBqDVmMz4fnFO9gybBogGz1U1s6Q1z6iRE7141AaP4U6p6c6eFvQ2E5P5iCfQF6Q" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="/js/search.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -233,5 +284,77 @@
             paymentConfirmedModal.show();
         }
     });
+
+    let validCityNames = [];
+
+    $(function () {
+        const $cityInput = $("#cityInput");
+
+        $cityInput.autocomplete({
+            source: function (request, response) {
+                const query = request.term ? { city: request.term } : {}; // kosong = ambil semua
+                $.ajax({
+                    url: "/address/city",
+                    data: query,
+                    success: function (data) {
+                        if (data && data.data) {
+                            const results = data.data.map(function (item) {
+                                return {
+                                    label: item.cityName + " (" + item.totalHotel + " hotel)",
+                                    value: item.cityName,
+                                    totalHotel: item.totalHotel
+                                };
+                            });
+
+                            validCityNames = results.map(item => item.value.toLowerCase());
+                            response(results);
+                        } else {
+                            validCityNames = [];
+                            response([]);
+                        }
+                    }
+                });
+            },
+            minLength: 0,
+            select: function (event, ui) {
+                $cityInput.val(ui.item.value);
+                $cityInput.prop("readonly", true);
+                $cityInput.data("valid", true);
+                return false;
+            },
+            change: function (event, ui) {
+                const val = $cityInput.val().toLowerCase();
+                if (!ui.item || !validCityNames.includes(val)) {
+                    $cityInput.val("");
+                    $cityInput.data("valid", false);
+                    // alert("Silakan pilih kota dari daftar yang tersedia.");
+                }
+            }
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+            return $("<li class='p-2'>")
+                .append(`
+                <div style="display: flex; align-items: center;">
+                    <i class="fas fa-hotel me-2 text-warning"></i>
+                    <div>
+                        <div style="font-weight: 500;">${item.value}</div>
+                        <div style="font-size: 12px; color: gray;">🏨 ${item.totalHotel} hotel tersedia</div>
+                    </div>
+                </div>
+            `)
+                .appendTo(ul);
+        };
+
+        // Trigger pencarian awal saat klik (hanya jika belum readonly)
+        $cityInput.on("click", function () {
+            if ($(this).prop("readonly")) {
+                $(this).prop("readonly", false);
+                $(this).val("");
+            }
+            // Trigger pencarian untuk tampilkan semua data
+            $(this).autocomplete("search", "");
+        });
+    });
+
+
 </script>
 </html>
