@@ -71,15 +71,17 @@
 <div class="container container-table">
     <div class="table-header">
         <h3>User List</h3>
+        <a href="/user/add-manager" class="btn btn-primary">Add Hotel Manager</a>
+    </div>
+    <div class="table-header">
         <form id="roleFilterForm" class="d-flex align-items-center">
-            <select name="id" id="roleSelect" class="form-select me-2">
-                <option value="">-- Filter by Role --</option>
+            <label for="roleSelect" class="me-2 mb-0 fw-bold text-secondary text-nowrap">Filter Role:</label>
+            <select  name="id" id="roleSelect" class="form-select me-2">
+                <option value="">-- Semua Role --</option>
                 <option value="3" th:selected="${param.id == '3'}">Manager</option>
                 <option value="2" th:selected="${param.id == '2'}">Customer</option>
             </select>
         </form>
-
-        <a href="/user/add-manager" class="btn btn-primary">Add Hotel Manager</a>
     </div>
     <div class="table-responsive">
         <div id="user-table-container" th:include="~{fragments/user-list :: userList}"></div>
